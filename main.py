@@ -21,6 +21,7 @@ for r, d, f in os.walk(directory_to_extract_to):
             result = hashlib.md5(target_file_data).hexdigest()
             print(r + "\\" + file, " hash =", result)
 print("---" * 10)
+url = ""
 for r, d, f in os.walk(directory_to_extract_to):
     for file in f:
         target_file_data = open(r + "\\" + file, 'rb').read()
@@ -28,13 +29,12 @@ for r, d, f in os.walk(directory_to_extract_to):
         if result == "4636f9ae9fef12ebd56cd39586d33cfb":
             print(r + '\\' + file, "\n", open(r + "\\" + file, 'r').read(), "\n\n")
             url = open(r + "\\" + file, 'r').read()
-try:
-    response = requests.get(url)
-except OSError:
-    print("File is empty")
+
+response = requests.get(url)
 counter = 0
 result_dct = {}
 lines = re.findall(r'<div class="Table-module_row__3TH83">.*?</div>.*?</div>.*?</div>.*?</div>.*?</div>', response.text)
+cols_list = []
 for line in lines:
     if counter == 0:
         headers = re.sub(r'<.*?>', ';', line)
