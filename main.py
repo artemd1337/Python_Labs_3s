@@ -189,6 +189,7 @@ counter = 0
 rfile = ReadFile(input_filename)
 wfile = open(output_filename, 'w')
 worldview = dict()
+codes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 with tqdm(rfile.data, desc='Проверка записей') as progressbar:
     for elem in rfile.data:
         counter += 1
