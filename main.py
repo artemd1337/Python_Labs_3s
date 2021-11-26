@@ -100,7 +100,7 @@ class Validator:
         :return: True - passport_number прошел проверку
                  False - passport_number не прошел проверку
         """
-        return re.match(r"\d{6}", str(self.__passport_number)) is not None
+        return re.match(r"\d{6}$", str(self.__passport_number)) is not None
 
     def check_occupation(self):
         """
@@ -120,8 +120,8 @@ class Validator:
         :return: True - work_experience прошел проверку
                  False - work_experience не прошел проверку
         """
-        return re.match(r"\-?\d+$", str(self.__work_experience)) is not None \
-               and int(self.__work_experience) >= 0 and int(self.__work_experience) <= 60
+        return re.match(r"\-?\d+$", str(self.__work_experience)) is not None and int(
+            self.__work_experience) >= 0 and int(self.__work_experience) <= 60
 
     def check_academic_degree(self):
         """
@@ -190,6 +190,7 @@ rfile = ReadFile(input_filename)
 wfile = open(output_filename, 'w')
 worldview = dict()
 codes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+data_to_write = []
 with tqdm(rfile.data, desc='Проверка записей') as progressbar:
     for elem in rfile.data:
         counter += 1
@@ -220,13 +221,16 @@ with tqdm(rfile.data, desc='Проверка записей') as progressbar:
         if not err['address']:
             codes[9] += 1
         if code == 0:
-            wfile.write("email: " + elem["email"] + "\n" + "height:" + str(elem["height"]) + "\n" +
+            data_to_write.append(elem)
+            """wfile.write("email: " + elem["email"] + "\n" + "height:" + str(elem["height"]) + "\n" +
                         "inn: " + str(elem["inn"]) + "\n" + "passport_number:" + str(elem["passport_number"]) + "\n" +
                         "occupation: " + elem["occupation"] + "\n" + "work_experience: " + str(elem["work_experience"])
                         + "\n" + "academic_degree: " + elem["academic_degree"] + "\n" + "worldview: " + elem[
                             "worldview"] +
                         "\n" + "address: " + elem["address"] + "\n" + "__________________________________________\n")
+            """
         progressbar.update(1)
+    json.dump(data_to_write, wfile)
 wfile.close()
 errors = codes[1] + codes[2] + codes[3] + codes[4] + codes[5] + codes[6] + codes[7] + codes[8] + codes[9]
 print("Всего пользователей: " + str(counter) + "\nЧисло валидных записей - " + str(codes[0]) +
